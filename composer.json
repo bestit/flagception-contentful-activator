@@ -1,0 +1,42 @@
+{
+  "name": "flagception/contentful-activator",
+  "type": "lib",
+  "description": "Activator for manage feature toggles by contentful",
+  "keywords": ["flagception", "contentful-extension", "contentful", "activator"],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Michel Chowanski",
+      "email": "michel.chowanski@bestit-online.de"
+    }
+  ],
+  "require": {
+    "php": "^5.6||^7.0",
+    "flagception/flagception": "^1.0",
+    "contentful/contentful":  "^1.0||^2.0",
+    "symfony/options-resolver": ">=2.7"
+  },
+  "require-dev": {
+    "phing/phing": "^2.15",
+    "symfony/phpunit-bridge": "^3.0",
+    "phpunit/phpunit": "^5.5",
+    "squizlabs/php_codesniffer": "^2.8",
+    "php-coveralls/php-coveralls": "^1.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Flagception\\Contentful\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Flagception\\Contentful\\Tests\\": "tests"
+    }
+  },
+  "extra": {
+    "thanks": {
+      "name": "flagception/flagception",
+      "url": "https://github.com/bestit/flagception-sdk"
+    }
+  }
+}
