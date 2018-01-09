@@ -7,19 +7,10 @@ class YourClass
 {
     public function check(Client $client)
     {
-        // We need an loader which fetch all flags from contentful
-        // The client instance and mapping infos are giving.
-        $loader = new ContentfulLoader($client, [
-            'content_type' => 'FeatureToggle',
-            'field_name' => 'name',
-            'field_default' => 'default',
-            'field_constraint' => 'constraint'
-        ]);
-        
-        $expressionLanguage = new ExpressionLanguage();
-        $constraintResolver = new ConstraintResolver($expressionLanguage);
-        
-        $activator = new ContentfulActivator($loader, $constraintResolver);
+        // We need two arguments:
+        //  1. A contentful client
+        //  2. The content type name in contentful
+        $activator = new ContentfulActivator($client, 'FeatureToggle');
         
         if ($activator->isActive('feature_name_for_contentful')) {
             // Do something ...

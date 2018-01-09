@@ -2,10 +2,14 @@
 
 namespace Flagception\Contentful\Activator;
 
+use Contentful\Delivery\Client;
+use Contentful\Delivery\ContentTypeField;
+use Contentful\Delivery\DynamicEntry;
+use Contentful\Delivery\Query;
 use Flagception\Activator\FeatureActivatorInterface;
-use Flagception\Constraint\ConstraintResolverInterface;
-use Flagception\Contentful\Loader\ContentfulLoaderInterface;
+use Flagception\Contentful\Exception\InvalidEntryValueFormatException;
 use Flagception\Model\Context;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class ContentfulActivator
@@ -16,29 +20,45 @@ use Flagception\Model\Context;
 class ContentfulActivator implements FeatureActivatorInterface
 {
     /**
-     * The contentful loader
+     * The client
      *
-     * @var ContentfulLoaderInterface
+     * @var Client
      */
-    private $loader;
+    private $client;
 
     /**
-     * The constraint resolver
+     * Content type key
      *
-     * @var ConstraintResolverInterface
+     * @var string
      */
-    private $constraintResolver;
+    private $contentType;
+
+    /**
+     * The mapping fields
+     *
+     * @var array
+     */
+    private $mapping;
 
     /**
      * ContentfulActivator constructor.
      *
-     * @param ContentfulLoaderInterface $loader
-     * @param ConstraintResolverInterface $constraintResolver
+     * @param Client $client
+     * @param string $contentType
+     * @param array $mapping
      */
-    public function __construct(ContentfulLoaderInterface $loader, ConstraintResolverInterface $constraintResolver)
+    public function __construct(Client $client, $contentType, $mapping = [])
     {
-        $this->loader = $loader;
-        $this->constraintResolver = $constraintResolver;
+        $this->client = $client;
+        $this->contentType = $contentType;
+
+        $resolver = new OptionsResolver();
+        $resolver->setDefaults([
+            'name' => 'name',
+            'state' => 'state'
+        ]);
+
+        $this->mapping = $resolver->resolve($mapping);
     }
 
     /**
@@ -54,17 +74,32 @@ class ContentfulActivator implements FeatureActivatorInterface
      */
     public function isActive($name, Context $context)
     {
-        $flags = $this->loader->load();
+        $result = $this->client->getEntries((new Query)->setContentType($this->mapping['content_type']));
+        $flags = [];
+
+        /** @var DynamicEntry $item */
+        foreach ($result as $item) {
+            $fields = $item->getContentType()->getFields();
+
+            $values = array_map(function (ContentTypeField $field) use ($item) {
+                $entryValue = $item->{'get' . ucfirst($field->getId())}();
+                if (!is_string($entryValue) || !is_bool($entryValue)) {
+                    throw new InvalidEntryValueFormatException(sprintf(
+                        'Entry value must be string or boolean but is "%s"',
+                        gettype($entryValue)
+                    ));
+                }
+                return $entryValue;
+            }, $fields);
+
+            $state = filter_var($values[$this->mapping['state']], FILTER_VALIDATE_BOOLEAN);
+            $flags[$values[$this->mapping['name']]] = $state;
+        }
 
         if (!in_array($name, $flags, true)) {
             return false;
         }
 
-        if ($flags[$name]['default'] === true) {
-            return true;
-        }
-
-        $constraint = $flags[$name]['constraint'];
-        return $constraint !== null && $this->constraintResolver->resolve($constraint, $context) === true;
+        return $flags[$name]['state'];
     }
 }
