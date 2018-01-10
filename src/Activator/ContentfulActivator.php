@@ -74,7 +74,7 @@ class ContentfulActivator implements FeatureActivatorInterface
      */
     public function isActive($name, Context $context)
     {
-        $result = $this->client->getEntries((new Query)->setContentType($this->mapping['content_type']));
+        $result = $this->client->getEntries((new Query)->setContentType($this->contentType));
         $flags = [];
 
         /** @var DynamicEntry $item */
@@ -83,7 +83,7 @@ class ContentfulActivator implements FeatureActivatorInterface
 
             $values = array_map(function (ContentTypeField $field) use ($item) {
                 $entryValue = $item->{'get' . ucfirst($field->getId())}();
-                if (!is_string($entryValue) || !is_bool($entryValue)) {
+                if (!is_string($entryValue) && !is_bool($entryValue)) {
                     throw new InvalidEntryValueFormatException(sprintf(
                         'Entry value must be string or boolean but is "%s"',
                         gettype($entryValue)
@@ -96,10 +96,10 @@ class ContentfulActivator implements FeatureActivatorInterface
             $flags[$values[$this->mapping['name']]] = $state;
         }
 
-        if (!in_array($name, $flags, true)) {
+        if (!array_key_exists($name, $flags)) {
             return false;
         }
 
-        return $flags[$name]['state'];
+        return $flags[$name];
     }
 }
