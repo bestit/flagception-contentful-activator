@@ -7,7 +7,7 @@ Manage feature flags for [Flagception](https://packagist.org/packages/flagceptio
 [![Total Downloads](https://poser.pugx.org/flagception/contentful-activator/downloads)](https://packagist.org/packages/flagception/contentful-activator)
 [![License](https://poser.pugx.org/flagception/contentful-activator/license)](https://packagist.org/packages/flagception/contentful-activator)
 
-[![SensioLabsInsight](https://insight.sensiolabs.com/projects/f4a1f1ad-255d-42f5-9df2-1bfa7d6594c1/small.png)](https://insight.sensiolabs.com/projects/f4a1f1ad-255d-42f5-9df2-1bfa7d6594c1)
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/01317ffd-b126-47d3-beda-495cabd4685a/small.png)](https://insight.sensiolabs.com/projects/01317ffd-b126-47d3-beda-495cabd4685a)
 
 Download the library
 ---------------------------

@@ -8,6 +8,7 @@ use Contentful\Delivery\DynamicEntry;
 use Contentful\Delivery\Query;
 use Flagception\Activator\FeatureActivatorInterface;
 use Flagception\Contentful\Exception\InvalidEntryValueFormatException;
+use Flagception\Contentful\Exception\InvalidMappingException;
 use Flagception\Model\Context;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -87,6 +88,7 @@ class ContentfulActivator implements FeatureActivatorInterface
 
             $values = array_map(function (ContentTypeField $field) use ($item) {
                 $entryValue = $item->{'get' . ucfirst($field->getId())}();
+
                 if (!is_string($entryValue) && !is_bool($entryValue)) {
                     throw new InvalidEntryValueFormatException(sprintf(
                         'Entry value must be string or boolean but is "%s"',
@@ -96,8 +98,18 @@ class ContentfulActivator implements FeatureActivatorInterface
                 return $entryValue;
             }, $fields);
 
-            $state = filter_var($values[$this->mapping['state']], FILTER_VALIDATE_BOOLEAN);
-            $flags[$values[$this->mapping['name']]] = $state;
+            $nameField = $this->mapping['name'];
+            $stateField = $this->mapping['state'];
+
+            if (!array_key_exists($nameField, $values)) {
+                throw new InvalidMappingException(sprintf('Field with key `%s` not exist.', $nameField));
+            }
+
+            if (!array_key_exists($stateField, $values)) {
+                throw new InvalidMappingException(sprintf('Field with key `%s` not exist.', $stateField));
+            }
+
+            $flags[$values[$nameField]] = filter_var($values[$stateField], FILTER_VALIDATE_BOOLEAN);
         }
 
         if (!array_key_exists($name, $flags)) {
