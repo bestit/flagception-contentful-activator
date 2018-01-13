@@ -46,7 +46,7 @@ The `ContentfulActivator` need three arguments:
 * The contentful model type id as string
 * The field mappings as array ('name' and 'state') - Optional (default values are set)
 
-If you contentful model looks like this ...
+If your contentful model looks like this ...
 
 ```json
 {

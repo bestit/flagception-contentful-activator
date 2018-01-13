@@ -77,7 +77,11 @@ class ContentfulActivator implements FeatureActivatorInterface
         $result = $this->client->getEntries((new Query)->setContentType($this->contentType));
         $flags = [];
 
-        /** @var DynamicEntry $item */
+        /**
+         * The dynamic contentful item
+         *
+         * @var DynamicEntry $item
+         */
         foreach ($result as $item) {
             $fields = $item->getContentType()->getFields();
 
