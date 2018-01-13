@@ -2,6 +2,8 @@
 Manage feature flags for [Flagception](https://packagist.org/packages/flagception/flagception) with [Contentful](https://www.contentful.com/)!
 
 [![Latest Stable Version](https://poser.pugx.org/flagception/contentful-activator/v/stable)](https://packagist.org/packages/flagception/contentful-activator)
+[![Coverage Status](https://coveralls.io/repos/github/bestit/flagception-contentful-activator/badge.svg?branch=master)](https://coveralls.io/github/bestit/flagception-contentful-activator?branch=master)
+[![Build Status](https://travis-ci.org/bestit/flagception-contentful-activator.svg?branch=master)](https://travis-ci.org/bestit/flagception-contentful-activator)
 [![Total Downloads](https://poser.pugx.org/flagception/contentful-activator/downloads)](https://packagist.org/packages/flagception/contentful-activator)
 [![License](https://poser.pugx.org/flagception/contentful-activator/license)](https://packagist.org/packages/flagception/contentful-activator)
 
